@@ -18,6 +18,9 @@ let editID = '';
 //Submit Form
 form.addEventListener('submit', addItem)
 
+//Clear form
+clear.addEventListener('click', clearItems);
+
 // Functions
 function addItem(e){
     e.preventDefault();
@@ -26,7 +29,32 @@ function addItem(e){
     //If statement to check if user is not editing the item.
     if(value !== '' && editFlag === false)
     {
-        console.log("add item to the list");
+        const element = document.createElement('article');
+        //add class
+        element.classList.add('grocery-item');
+        //add id
+        const attr = document.createAttribute('data-id');
+        attr.value = id;
+        element.setAttributeNode(attr);
+        element.innerHTML = `<p class="title">${value}</p>
+        <div class="btn-container">
+            <button type="button" class="edit-btn">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="delete-btn">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>`; 
+        //append child
+        list.appendChild(element);
+        //display alert
+        displayAlert('Item added to the list', 'success')
+        //show container from css (.show-container line code 263)
+        container.classList.add('show-container');
+        //add to local storage
+        addToLocalStorage(id,value);
+        //set back to default
+        setBackToDefault();
     }
     //If statement to check if user is editing the item.
     else if(value !== '' && editFlag === true){
@@ -48,6 +76,33 @@ function displayAlert(text, action){
         alert.classList.remove(`alert-${action}`);
     },1000);
 }
+
+//clear items function
+function clearItems(){
+    const items = document.querySelectorAll('.grocery-item');
+    if(items.length > 0){
+        items.forEach((item) => {
+            list.removeChild(item);
+        });
+    }
+
+    container.classList.remove("show-container");
+    displayAlert("list has been removed", "success")
+    setBackToDefault();
+    //localStorage.removeItem('list');
+}
+
+//Set back to default
+function setBackToDefault(){
+    grocery.value = '';
+    editFlag = false;
+    editID = "";
+    submitBtn.textContent = 'submit';
+}
+
 // Local Storage
+function addToLocalStorage(id, value){
+    console.log('added to local storage');
+}
 
 // Setup items
