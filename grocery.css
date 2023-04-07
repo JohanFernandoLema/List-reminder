@@ -10,7 +10,6 @@ Fonts
 Variables
 ===============
 */
-
 :root {
   /* dark shades of primary color*/
   --clr-primary-1: hsl(205, 86%, 17%);
@@ -68,8 +67,11 @@ Global Styles
 }
 body {
   font-family: var(--ff-secondary);
-  background: var(--clr-grey-10);
   color: var(--clr-grey-1);
+  background: url("./Assets/background.jpeg");
+  background-position: right;
+  background-repeat: no-repeat;
+  background-size: cover;
   line-height: 1.5;
   font-size: 0.875rem;
 }

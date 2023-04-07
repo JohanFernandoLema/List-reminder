@@ -45,6 +45,12 @@ function addItem(e){
                 <i class="fas fa-trash"></i>
             </button>
         </div>`; 
+        const deleteBtn = element.querySelector('.delete-btn');
+        const editBtn = element.querySelector('.edit-btn');
+
+        deleteBtn.addEventListener("click", deleteItem);
+        editBtn.addEventListener("click", editItem);
+        
         //append child
         list.appendChild(element);
         //display alert
@@ -58,7 +64,13 @@ function addItem(e){
     }
     //If statement to check if user is editing the item.
     else if(value !== '' && editFlag === true){
-        console.log("editiong");
+        editElement.innerHTML = value;
+        displayAlert('Item modified', 'success')
+
+        //editLocalStorage
+        editLocalStorage(editID, value);
+        setBackToDefault();
+         
     }
     ////If statement to check if user has added something to the list
     else{
@@ -91,18 +103,66 @@ function clearItems(){
     setBackToDefault();
     //localStorage.removeItem('list');
 }
+//delete function
+function deleteItem(e){
+    const element = e.currentTarget.parentElement.parentElement;
+    const id = element.dataset.id;
+    list.removeChild(element);
+    if(list.children.length === 0){
+        container.classList.remove('show-container');
+    }
+    displayAlert('item removed', 'danger')
+    setBackToDefault();
+    //remove from local storage
+    // removeFromLocalStorage(id);
 
+}
+
+
+//edit function
+function editItem(e){
+    const element = e.currentTarget.parentElement.parentElement;
+    //set edit item
+    editElement = e.currentTarget.parentElement.previousElementSibling;
+    //set form value
+    grocery.value = editElement.innerHTML;
+    editFlag = true;
+    editID = element.dataset.id;
+    submitBtn.textContent = "edit";
+}
 //Set back to default
 function setBackToDefault(){
     grocery.value = '';
     editFlag = false;
     editID = "";
-    submitBtn.textContent = 'submit';
+    submitBtn.textContent = 'Add';
 }
 
 // Local Storage
 function addToLocalStorage(id, value){
-    console.log('added to local storage');
+    const grocery = {id, value};
+    let items = localStorage.getItem("list") ? JSON.parse(localStorage.getItem('lsit')) : [];
+    items.push(grocery);
+    // console.log('added to local storage');
+}
+function removeFromLocalStorage(id){
+
+}
+// Setup items
+function editLocalStorage(id, value) {
+
 }
 
-// Setup items
+// localStorage API
+
+// setItem
+
+// getItem
+
+// removeItem
+
+// save as string
+// localStorage.setItem('orange',JSON.stringify(['item','item 2']));
+// const oranges = JSON.parse(localStorage.getItem("orange"));
+// console.log(oranges);
+// localStorage.removeItem("orange");
