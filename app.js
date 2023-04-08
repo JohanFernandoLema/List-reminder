@@ -21,6 +21,9 @@ form.addEventListener('submit', addItem)
 //Clear form
 clear.addEventListener('click', clearItems);
 
+//load items
+window.addEventListener('DOMContentLoaded', setupItems);
+
 // Functions
 function addItem(e){
     e.preventDefault();
@@ -29,30 +32,7 @@ function addItem(e){
     //If statement to check if user is not editing the item.
     if(value !== '' && editFlag === false)
     {
-        const element = document.createElement('article');
-        //add class
-        element.classList.add('grocery-item');
-        //add id
-        const attr = document.createAttribute('data-id');
-        attr.value = id;
-        element.setAttributeNode(attr);
-        element.innerHTML = `<p class="title">${value}</p>
-        <div class="btn-container">
-            <button type="button" class="edit-btn">
-                <i class="fas fa-edit"></i>
-            </button>
-            <button type="button" class="delete-btn">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>`; 
-        const deleteBtn = element.querySelector('.delete-btn');
-        const editBtn = element.querySelector('.edit-btn');
-
-        deleteBtn.addEventListener("click", deleteItem);
-        editBtn.addEventListener("click", editItem);
-        
-        //append child
-        list.appendChild(element);
+        createListItem(id, value);; 
         //display alert
         displayAlert('Item added to the list', 'success')
         //show container from css (.show-container line code 263)
@@ -158,7 +138,14 @@ function removeFromLocalStorage(id){
 }
 // Setup items
 function editLocalStorage(id, value) {
-
+    let items = getLocalStorage();
+    items= items.map(function(item){
+        if(item.id === id){
+            item.value = value
+        }
+        return item;
+    });
+    localStorage.setItem("list", JSON.stringify(items));
 }
 
 function getLocalStorage(){
@@ -178,3 +165,42 @@ function getLocalStorage(){
 // const oranges = JSON.parse(localStorage.getItem("orange"));
 // console.log(oranges);
 // localStorage.removeItem("orange");
+
+//Set up items
+function setupItems(){
+    let items = getLocalStorage();
+
+    if(items.length > 0){
+         items.forEach(function(item){
+            createListItem(item.id, item.value);
+         });
+         container.classList.add('show-container');
+    }   
+}
+
+function createListItem(id, value){
+    const element = document.createElement('article');
+    //add class
+    element.classList.add('grocery-item');
+    //add id
+    const attr = document.createAttribute('data-id');
+    attr.value = id;
+    element.setAttributeNode(attr);
+    element.innerHTML = `<p class="title">${value}</p>
+    <div class="btn-container">
+        <button type="button" class="edit-btn">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button type="button" class="delete-btn">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>`; 
+    const deleteBtn = element.querySelector('.delete-btn');
+    const editBtn = element.querySelector('.edit-btn');
+
+    deleteBtn.addEventListener("click", deleteItem);
+    editBtn.addEventListener("click", editItem);
+    
+    //append child
+    list.appendChild(element);
+}
